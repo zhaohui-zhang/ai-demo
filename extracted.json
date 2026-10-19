@@ -1,0 +1,26 @@
+[
+  {
+    "name": "李明",
+    "gender": "男",
+    "age": 22,
+    "job": "应届毕业生",
+    "city": null,
+    "school": "西安交通大学"
+  },
+  {
+    "name": "王芳",
+    "gender": "女",
+    "age": 35,
+    "job": "产品经理",
+    "city": "上海",
+    "school": "复旦大学"
+  },
+  {
+    "name": null,
+    "gender": null,
+    "age": null,
+    "job": null,
+    "city": null,
+    "school": null
+  }
+]
