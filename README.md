@@ -117,6 +117,15 @@ ai-demo/
 - **JSON 是 Agent 的通信协议。**&#8203; 提示词里写"没有就填 null"，能有效抑制幻觉。
 - **`try/except` 必须放在循环内**，才能把失败控制在单条，而不是让整批崩掉。
 - **"限定条数" ≠ "限定内容"。**&#8203; 要让输出稳定，必须给每一条分配"角色"。
+## 技术债 / TODO
+
+- [ ] **Memory API 已弃用**：`lc_memory.py`、`lc_assistant.py` 使用了
+      `RunnableWithMessageHistory` 和 `InMemoryChatMessageHistory`，
+      二者在 LangChain 1.6.4 起被标记弃用，**2.0 版本将移除**。
+      **迁移方案**（二选一）：
+      1. 手写版：用 `HumanMessage` / `AIMessage` 列表 + `MessagesPlaceholder`
+      2. 官方版：学 LangGraph 后用其 built-in persistence
+
 
 ## 作者
 
