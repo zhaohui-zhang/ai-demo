@@ -17,6 +17,9 @@ venv/
 .venv/
 env/
 
+# ===== Chroma 向量库（本地构建产物，不入库）=====
+chroma_db/
+
 # ===== 编辑器 / 系统 =====
 .vscode/
 .idea/
