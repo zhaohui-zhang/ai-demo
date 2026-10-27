@@ -1,0 +1,142 @@
+[
+  {
+    "id": "A01",
+    "group": "answer",
+    "question": "巴沙鱼要蒸多久？",
+    "expect_any": ["8 分钟", "8分钟", "八分钟"],
+    "note": "菜谱·巴沙鱼，数字必须准确"
+  },
+  {
+    "id": "A02",
+    "group": "answer",
+    "question": "荷兰豆要大火炒多久？",
+    "expect_any": ["2 分钟", "两分钟", "1 分钟", "一分钟"],
+    "note": "菜谱·荷兰豆，两个时间点任一即可"
+  },
+  {
+    "id": "A03",
+    "group": "answer",
+    "question": "木耳焯水要多长时间？",
+    "expect_any": ["1 分钟", "一分钟"],
+    "note": "菜谱·荷兰豆，易与 A02 混淆"
+  },
+  {
+    "id": "A04",
+    "group": "answer",
+    "question": "香菇滑鸡的鸡块要腌多久？",
+    "expect_any": ["15 分钟", "15分钟", "十五分钟"],
+    "note": "菜谱·香菇滑鸡"
+  },
+  {
+    "id": "A05",
+    "group": "answer",
+    "question": "香菇滑鸡上锅蒸几分钟？",
+    "expect_any": ["12 分钟", "12分钟", "十二分钟"],
+    "note": "菜谱·香菇滑鸡，与巴沙鱼 8 分钟是干扰对"
+  },
+  {
+    "id": "A06",
+    "group": "answer",
+    "question": "咖啡因的半衰期是多久？",
+    "expect_any": ["5 小时", "5小时", "五小时"],
+    "note": "睡眠笔记·咖啡因段"
+  },
+  {
+    "id": "A07",
+    "group": "answer",
+    "question": "下午几点之后就不该喝咖啡了？",
+    "expect_any": ["两点", "2 点", "2点", "14"],
+    "note": "睡眠笔记·咖啡因段，问法与原文不同"
+  },
+  {
+    "id": "A08",
+    "group": "answer",
+    "question": "坚持调整两周还是睡不着，应该怎么办？",
+    "expect_any": ["门诊", "医生", "就医", "医院"],
+    "note": "睡眠笔记·新增段落"
+  },
+  {
+    "id": "A09",
+    "group": "answer",
+    "question": "chunk_size 是什么意思？",
+    "expect_any": ["最大字符数", "最大的字符数", "字符数"],
+    "note": "AI笔记·切分段"
+  },
+  {
+    "id": "A10",
+    "group": "answer",
+    "question": "text-embedding-v3 输出多少维向量？",
+    "expect_any": ["1024"],
+    "note": "AI笔记·向量段"
+  },
+  {
+    "id": "R01",
+    "group": "refuse",
+    "question": "红烧肉怎么做？",
+    "expect_any": [],
+    "note": "库里三道菜均不含红烧肉"
+  },
+  {
+    "id": "R02",
+    "group": "refuse",
+    "question": "番茄炒蛋怎么做？",
+    "expect_any": [],
+    "note": "菜谱类但库里没有，最容易被误答"
+  },
+  {
+    "id": "R03",
+    "group": "refuse",
+    "question": "量子计算机的原理是什么？",
+    "expect_any": [],
+    "note": "完全跨领域"
+  },
+  {
+    "id": "R04",
+    "group": "refuse",
+    "question": "今天天气怎么样？",
+    "expect_any": [],
+    "note": "时效性问题，知识库永远无法回答"
+  },
+  {
+    "id": "R05",
+    "group": "refuse",
+    "question": "考研政治怎么复习？",
+    "expect_any": [],
+    "note": "与 AI 笔记同属学习类，易误召回"
+  },
+  {
+    "id": "R06",
+    "group": "refuse",
+    "question": "股票怎么开户？",
+    "expect_any": [],
+    "note": "完全跨领域"
+  },
+  {
+    "id": "B01",
+    "group": "boundary",
+    "question": "清蒸鱼要蒸多久？",
+    "expect_any": ["8 分钟", "8分钟"],
+    "note": "边界题：库里是巴沙鱼，语义可泛化，应能答"
+  },
+  {
+    "id": "B02",
+    "group": "boundary",
+    "question": "喝奶茶会影响睡眠吗？",
+    "expect_any": ["咖啡因", "影响", "半衰期"],
+    "note": "边界题：原文说咖啡因，没说奶茶，靠常识关联"
+  },
+  {
+    "id": "B03",
+    "group": "boundary",
+    "question": "卧室温度对睡眠有影响吗？",
+    "expect_any": ["温度"],
+    "note": "边界题：新增段落里提过调低温度"
+  },
+  {
+    "id": "B04",
+    "group": "boundary",
+    "question": "向量库的数据要不要提交到 git？",
+    "expect_any": ["构建产物", "不能提交", "不要提交", "chroma_db"],
+    "note": "边界题：问法与原文（踩坑记录）表述差别较大"
+  }
+]

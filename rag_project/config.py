@@ -17,6 +17,7 @@ load_dotenv()
 ROOT_DIR = Path(__file__).resolve().parent.parent
 DOC_DIR = ROOT_DIR / "knowledge"
 CHROMA_DIR = ROOT_DIR / "chroma_db"
+EVAL_FILE = ROOT_DIR / "eval" / "questions.json"
 
 # ---------- 文档格式 ----------
 # 支持的扩展名。以后加 .pdf，只改这一行 + chunking.iter_doc_paths
