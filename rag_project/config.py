@@ -18,6 +18,10 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 DOC_DIR = ROOT_DIR / "knowledge"
 CHROMA_DIR = ROOT_DIR / "chroma_db"
 
+# ---------- 文档格式 ----------
+# 支持的扩展名。以后加 .pdf，只改这一行 + chunking.iter_doc_paths
+DOC_EXTENSIONS = (".txt", ".md")
+
 # ---------- 模型 ----------
 EMBED_MODEL = "text-embedding-v3"
 EMBED_DIM = 1024  # text-embedding-v3 输出维度，建 collection 时必须与之一致

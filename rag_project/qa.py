@@ -18,11 +18,17 @@ PROMPT_TEMPLATE = """请根据下面提供的资料回答问题。
 问题：{question}"""
 
 
-def retrieve(collection, question, k=TOP_K):
-    """返回候选片段列表（未过滤）。"""
-    k = min(k, collection.count())  # n_results 超过库内条数会直接抛错
+def retrieve(collection, question, k=TOP_K, where=None):
+    """返回候选片段列表（未过滤）。where 可指定只在某份文档里检索。"""
+    # where 会把候选池缩小，所以 k 的上界要按「过滤后」的条数算，
+    # 不能用 collection.count()（那是全库条数，会让 n_results 越界报错）
+    total = len(collection.get(where=where)["ids"])
+    if total == 0:
+        return []
+    k = min(k, total)
+
     q_vec = embed([question])[0]
-    res = collection.query(query_embeddings=[q_vec], n_results=k)
+    res = collection.query(query_embeddings=[q_vec], n_results=k, where=where)
 
     items = []
     for i in range(len(res["ids"][0])):
@@ -41,8 +47,16 @@ def build_prompt(question, contexts):
     return PROMPT_TEMPLATE.format(ctx=ctx, question=question)
 
 
-def answer(collection, question, k=TOP_K, verbose=True):
-    candidates = retrieve(collection, question, k)
+def answer(collection, question, k=TOP_K, where=None, verbose=True):
+    candidates = retrieve(collection, question, k, where=where)
+
+    # 过滤后一条都没有：多半是 where 里的 source 写错了，或那份文档没入库
+    if not candidates:
+        if verbose:
+            print("=" * 55)
+            print(f"问题：{question}")
+            print(f"没检索到任何片段（where={where}），检查 source 名是否正确\n")
+        return "根据现有资料无法回答"
 
     if verbose:
         print("=" * 55)
