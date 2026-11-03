@@ -11,11 +11,9 @@ import json
 import time
 from pathlib import Path
 
-from config import EVAL_FILE
+from config import EVAL_FILE, REFUSE_ANSWER as REFUSE
 from indexing import build_index
 from qa import answer
-
-REFUSE = "根据现有资料无法回答"
 
 
 def load_cases(path=EVAL_FILE):

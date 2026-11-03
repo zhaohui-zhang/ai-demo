@@ -30,6 +30,11 @@ CHAT_MODEL = os.environ.get("DASHSCOPE_MODEL", "qwen-plus")
 
 # ---------- 检索 ----------
 COLLECTION_NAME = "kb_docs"
+
+# 拒答话术：CLI、Web、评估脚本三处共用。
+# 评估脚本靠这个字符串判"该拒的是否拒了"，所以它必须只有一份定义，
+# 否则改了 qa.py 忘了改 evaluate.py，评分会悄悄失效。
+REFUSE_ANSWER = "根据现有资料无法回答"
 BATCH_SIZE = 10      # text-embedding-v3 单次 input 上限
 TOP_K = 3            # 每次检索取几条
 MAX_DISTANCE = 0.45  # 距离门控阈值：实测真相关 0.29~0.37，假相关 0.51~0.71
