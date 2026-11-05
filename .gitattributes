@@ -1,0 +1,15 @@
+# 换行统一：仓库里一律存 LF，Windows 检出也不转换
+* text=auto eol=lf
+
+# Windows 专用脚本必须 CRLF，否则 cmd 解析可能出错
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# 二进制文件：不要让 git 参与换行/编码处理
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.xlsx binary
