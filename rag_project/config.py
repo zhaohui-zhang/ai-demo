@@ -20,8 +20,8 @@ CHROMA_DIR = ROOT_DIR / "chroma_db"
 EVAL_FILE = ROOT_DIR / "eval" / "questions.json"
 
 # ---------- 文档格式 ----------
-# 支持的扩展名。以后加 .pdf，只改这一行 + chunking.iter_doc_paths
-DOC_EXTENSIONS = (".txt", ".md")
+# 支持的扩展名。加格式只改这一行：iter_doc_paths 是按本元组循环 glob 的
+DOC_EXTENSIONS = (".txt", ".md", ".pdf")
 
 # ---------- 模型 ----------
 EMBED_MODEL = "text-embedding-v3"
