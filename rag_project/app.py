@@ -141,6 +141,11 @@ with st.sidebar:
     )
     source = st.selectbox("限定数据源", ["全部"] + sources)
     where = None if source == "全部" else {"source": source}
+    use_rerank = st.checkbox(
+        "BM25 重排",
+        value=False,
+        help="先粗排 9 条，门控过滤后用 BM25+RRF 精排，最后仍取 top-k 进 prompt",
+    )
 
     st.divider()
     st.subheader("试这些问题")
@@ -185,7 +190,8 @@ if prompt:
             st.error("索引还没建好，请先在左侧点「重建索引」。")
         else:
             with st.spinner("检索中…"):
-                res = ask(collection, prompt, k=top_k, where=where, max_distance=threshold)
+                res = ask(collection, prompt, k=top_k, where=where,
+                          max_distance=threshold, use_rerank=use_rerank)
             res["threshold"] = threshold  # 记下这次用的阈值，历史消息回看时才对得上
 
             render_answer(res)

@@ -20,6 +20,10 @@ env/
 # ===== Chroma 向量库（本地构建产物，不入库）=====
 chroma_db/
 
+# ===== 知识库原始文档：版权/体积原因不入库 =====
+# 换机器后按 README 说明，把自己的 PDF 放进 knowledge/ 再重建索引
+knowledge/*.pdf
+
 # ===== 编辑器 / 系统 =====
 .vscode/
 .idea/

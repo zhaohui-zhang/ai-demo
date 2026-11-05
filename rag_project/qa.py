@@ -9,8 +9,9 @@
 
 import time
 
-from config import CHAT_MODEL, MAX_DISTANCE, REFUSE_ANSWER, TOP_K, client
+from config import CHAT_MODEL, COARSE_K, MAX_DISTANCE, REFUSE_ANSWER, TOP_K, client
 from indexing import embed
+from rerank import rerank_bm25
 
 PROMPT_TEMPLATE = """请根据下面提供的资料回答问题。
 
@@ -53,22 +54,34 @@ def build_prompt(question, contexts):
     return PROMPT_TEMPLATE.format(ctx=ctx, question=question)
 
 
-def ask(collection, question, k=TOP_K, where=None, max_distance=MAX_DISTANCE):
+def ask(collection, question, k=TOP_K, where=None, max_distance=MAX_DISTANCE,
+        use_rerank=False, k_coarse=COARSE_K):
     """完整问答，返回 dict：
 
         answer       回答字符串（可能是拒答话术）
-        candidates   检索到的全部候选（含超阈值的，界面上要展示"被拦掉的")
-        used         真正进了 prompt 的片段
+        candidates   检索到的全部候选（含超阈值的，界面上要展示"被拦掉的"）
+        used         真正进了 prompt 的片段（重排后的顺序）
         reason       ok / no_hit（过滤后为空）/ over_threshold（全部超阈值）
         elapsed      总耗时（秒）
         model_called 是否真的调用了大模型 —— 门控省钱的直接证据
+        reranked     本题是否走了重排
 
     max_distance 做成参数而不是直接用常量，是为了 Web 界面能拖动滑块
     现场演示"阈值变一点，拒答行为怎么变"。这不只是炫技：它就是你要
     给面试官看的那条曲线的来源。
+
+    use_rerank：先用 k_coarse 条粗排，门控过滤后交给 BM25+RRF 重排，
+    最后仍只取 k 条进 prompt。门控必须在重排之前 —— 否则 0.45 的
+    距离语义失效，历史实测数据全部作废。
     """
     t0 = time.time()
-    candidates = retrieve(collection, question, k, where=where)
+
+    # 开重排时粗排多取（k_coarse），否则保持原行为，历史结果才可比
+    candidates = retrieve(
+        collection, question,
+        k_coarse if use_rerank else k,
+        where=where,
+    )
 
     # 情况一：过滤后一条都没有（where 写错，或那份文档没入库）
     if not candidates:
@@ -79,6 +92,7 @@ def ask(collection, question, k=TOP_K, where=None, max_distance=MAX_DISTANCE):
             "reason": "no_hit",
             "elapsed": time.time() - t0,
             "model_called": False,
+            "reranked": use_rerank,
         }
 
     # 情况二：有候选，但相关度全部不达标 —— 门控在这里拦下，不调模型
@@ -91,7 +105,14 @@ def ask(collection, question, k=TOP_K, where=None, max_distance=MAX_DISTANCE):
             "reason": "over_threshold",
             "elapsed": time.time() - t0,
             "model_called": False,
+            "reranked": use_rerank,
         }
+
+    # 重排只作用于"已通过门控"的块；不截断到 k 的话 token 成本会翻几倍
+    if use_rerank:
+        used = rerank_bm25(question, used, top_n=k)
+    else:
+        used = used[:k]
 
     resp = client.chat.completions.create(
         model=CHAT_MODEL,
@@ -105,12 +126,13 @@ def ask(collection, question, k=TOP_K, where=None, max_distance=MAX_DISTANCE):
         "reason": "ok",
         "elapsed": time.time() - t0,
         "model_called": True,
+        "reranked": use_rerank,
     }
 
 
-def answer(collection, question, k=TOP_K, where=None, verbose=True):
+def answer(collection, question, k=TOP_K, where=None, verbose=True, use_rerank=False):
     """命令行版：调用 ask()，把过程打印出来，只返回回答字符串。"""
-    res = ask(collection, question, k, where=where)
+    res = ask(collection, question, k, where=where, use_rerank=use_rerank)
 
     if verbose:
         print("=" * 55)
@@ -130,6 +152,13 @@ def answer(collection, question, k=TOP_K, where=None, verbose=True):
             print(f"\n回答：\n{res['answer']}"
                   f"（检索距离全部超过阈值 {MAX_DISTANCE}，未调用模型）\n")
             return res["answer"]
+
+        if res["reranked"]:
+            order = " / ".join(
+                f"{i}.{c['source']}(rrf={c['rrf']:.5f})"
+                for i, c in enumerate(res["used"], start=1)
+            )
+            print(f"重排后进 prompt：{order}")
 
         print("\n回答：")
         print(res["answer"])

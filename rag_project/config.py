@@ -36,7 +36,8 @@ COLLECTION_NAME = "kb_docs"
 # 否则改了 qa.py 忘了改 evaluate.py，评分会悄悄失效。
 REFUSE_ANSWER = "根据现有资料无法回答"
 BATCH_SIZE = 10      # text-embedding-v3 单次 input 上限
-TOP_K = 3            # 每次检索取几条
+TOP_K = 3            # 每次检索取几条（也是最终进 prompt 的条数）
+COARSE_K = TOP_K * 3 # 粗排候选数：开 rerank 时先多取几倍，给它留选择空间
 MAX_DISTANCE = 0.45  # 距离门控阈值：实测真相关 0.29~0.37，假相关 0.51~0.71
 
 # ---------- 切分 ----------
